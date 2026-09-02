@@ -6,7 +6,7 @@ export interface QrStyle {
   logoUrl?: string | null
 }
 
-export async function createQrDataUrl(value: string, style: QrStyle = {}) {
+export async function createQrDataUrl(value: string, style: QrStyle = {}, onLogoError?: () => void) {
   const dataUrl = await QRCode.toDataURL(value, {
     margin: 1,
     width: 560,
@@ -38,6 +38,7 @@ export async function createQrDataUrl(value: string, style: QrStyle = {}) {
     context.restore()
     return canvas.toDataURL('image/png')
   } catch {
+    onLogoError?.()
     return dataUrl
   }
 }
@@ -47,6 +48,7 @@ function loadImage(source: string) {
     const image = new Image()
     image.onload = () => resolve(image)
     image.onerror = reject
+    image.crossOrigin = 'anonymous'
     image.src = source
   })
 }

@@ -21,6 +21,9 @@ describe('QR service', () => {
       set src(value: string) { value === 'broken-logo' ? this.onerror?.() : this.onload?.() }
     })
 
-    await expect(createQrDataUrl('https://sic-qr-gen.vercel.app/AbcDefG', { logoUrl: 'broken-logo' })).resolves.toBe('data:image/png;base64,qr')
+    const onLogoError = vi.fn()
+
+    await expect(createQrDataUrl('https://sic-qr-gen.vercel.app/AbcDefG', { logoUrl: 'broken-logo' }, onLogoError)).resolves.toBe('data:image/png;base64,qr')
+    expect(onLogoError).toHaveBeenCalledOnce()
   })
 })

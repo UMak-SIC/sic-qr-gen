@@ -14,3 +14,5 @@
 @media (prefers-reduced-motion: reduce) { .primary-button { transition: none; } }
 .modal-form { overflow-x: hidden; }
 .modal-form .section-heading::after { content: 'Create a QR link'; white-space: normal; padding-top: 20px; }
+.confirmation-modal .section-heading::before, .confirmation-modal .section-heading::after { content: none; }
+.confirmation-modal { min-height: 0; }
