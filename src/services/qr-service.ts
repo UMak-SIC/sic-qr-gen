@@ -34,7 +34,12 @@ export async function createQrDataUrl(value: string, style: QrStyle = {}, onLogo
     context.beginPath()
     context.arc(280, 280, size / 2, 0, Math.PI * 2)
     context.clip()
-    context.drawImage(logo, x, x, size, size)
+    const logoWidth = logo.naturalWidth || logo.width
+    const logoHeight = logo.naturalHeight || logo.height
+    const scale = Math.min(size / logoWidth, size / logoHeight)
+    const width = logoWidth * scale
+    const height = logoHeight * scale
+    context.drawImage(logo, 280 - width / 2, 280 - height / 2, width, height)
     context.restore()
     return canvas.toDataURL('image/png')
   } catch {

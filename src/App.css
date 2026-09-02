@@ -1,6 +1,6 @@
 :root { --green: #176b4f; --deep-green: #173e33; --lime: #d8ec42; --paper: #f6f4ea; --line: #c9d1bc; --muted: #6e7c6e; --pink: #d67a88; --radius: 16px; }
 .app-shell { max-width: 1320px; margin: 0 auto; padding: 0 34px; overflow: hidden; }
-.topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; letter-spacing: -.04em; }.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; color: var(--paper); background: var(--green); border-radius: 50%; font-size: 11px; }.nav-links { display: flex; align-items: center; gap: 18px; }.user-email { max-width: 260px; overflow: hidden; color: var(--muted); font: 11px 'DM Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }.account-button, .close-button { border: 1px solid var(--line); border-radius: 50%; color: var(--deep-green); background: transparent; cursor: pointer; }.account-button { width: 34px; height: 34px; font-size: 15px; }.close-button { width: 32px; height: 32px; font-size: 22px; }
+.topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; letter-spacing: -.04em; }.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; color: var(--paper); background: var(--green); border-radius: 50%; font-size: 11px; }.nav-links { display: flex; align-items: center; gap: 18px; }.user-email { max-width: 260px; overflow: hidden; color: var(--muted); font: 11px 'DM Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }.account-button, .close-button { border: 1px solid var(--line); border-radius: 50%; color: var(--deep-green); background: transparent; cursor: pointer; }.account-button { width: auto; min-height: 34px; padding: 0 14px; border-color: #a94f58; border-radius: 999px; color: #a94f58; background: transparent; font: 11px 'DM Mono', monospace; font-size: 0; }.account-button::after { content: 'Log out'; font-size: 11px; }.account-button:hover { border-color: #873e48; color: #873e48; }.close-button { width: 32px; height: 32px; font-size: 22px; }
 .eyebrow, .tiny-label, .helper-text, .link-count { color: var(--green); font: 500 11px/1 'DM Mono', monospace; letter-spacing: .16em; }.eyebrow { margin: 0 0 22px; }h1, h2, h3, p { margin-top: 0; }h1, h2 { letter-spacing: -.08em; }h1 { margin-bottom: 22px; color: var(--deep-green); font-size: clamp(52px, 6.1vw, 91px); line-height: .92; font-weight: 600; }h1 span, h2 span { color: var(--green); }h1 em { color: var(--pink); font-style: normal; }h2 { margin-bottom: 0; color: var(--deep-green); font-size: clamp(42px, 5vw, 68px); line-height: .95; font-weight: 600; }
 .primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; gap: 18px; min-height: 52px; padding: 0 22px; border: 0; border-radius: 999px; font-weight: 600; cursor: pointer; transition: transform .2s ease, background .2s ease; }.primary-button { color: var(--paper); background: var(--green); }.primary-button:hover { background: var(--deep-green); transform: translateY(-2px); }.primary-button:disabled { cursor: wait; opacity: .6; }.primary-button span { font-size: 21px; font-weight: 400; }.secondary-button { border: 1px solid var(--line); color: var(--deep-green); background: transparent; }.hero-description { max-width: 390px; margin-bottom: 30px; color: var(--muted); font-size: 17px; line-height: 1.5; }.hero-note { margin-top: 15px; color: var(--muted); font: 12px/1.3 'DM Mono', monospace; }
 .auth-page, .status-page { min-height: 100vh; display: grid; place-items: center; padding: 30px; }.auth-card { width: min(620px, 100%); padding: clamp(28px, 7vw, 78px); border: 1px solid var(--line); border-radius: var(--radius); background: #e7edd6; }.auth-card .brand { margin-bottom: 90px; }.auth-card .primary-button { width: 100%; }
@@ -14,5 +14,23 @@
 @media (prefers-reduced-motion: reduce) { .primary-button { transition: none; } }
 .modal-form { overflow-x: hidden; }
 .modal-form .section-heading::after { content: 'Create a QR link'; white-space: normal; padding-top: 20px; }
+.modal-form.editing .section-heading::before { content: 'EDIT QR'; }
+.modal-form.editing .section-heading::after { content: 'Edit QR'; }
 .confirmation-modal .section-heading::before, .confirmation-modal .section-heading::after { content: none; }
 .confirmation-modal { min-height: 0; }
+.link-icon { font-size: 0; }
+.link-icon::before { content: '↗︎'; font: 17px/1 Arial, sans-serif; }
+.account-button { font-variant-emoji: text; }
+.form-grid, .form-grid > * { min-width: 0; }
+.qr-preview { width: 100%; max-width: 330px; justify-self: end; }
+.qr-preview img, .preview-placeholder { max-width: 100%; }
+.modal-form .section-heading { min-height: 32px; }
+.modal-form .section-heading > .close-button { position: absolute; top: 0; left: 0; }
+@media (max-width: 600px) {
+  .form-backdrop { padding: 16px; place-items: start center; }
+  .modal-form { width: 100%; max-height: calc(100dvh - 32px); }
+  .qr-preview { justify-self: center; }
+}
+.modal-form input { display: block; min-width: 0; max-width: 100%; }
+.modal-form input[type='date'] { appearance: none; -webkit-appearance: none; text-align: start; }
+.account-button::after { content: 'Log Out  ↗'; }

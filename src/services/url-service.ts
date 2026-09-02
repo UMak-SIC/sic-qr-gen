@@ -6,10 +6,13 @@ const URL_COLUMNS = 'id,url_id,name,original_url,view_count,status,expires_at,qr
 export async function uploadQrLogo(file: File, userId: string) {
   const bitmap = await createImageBitmap(file)
   const canvas = document.createElement('canvas')
-  const size = Math.min(bitmap.width, bitmap.height, 512)
+  const size = Math.min(Math.max(bitmap.width, bitmap.height), 512)
+  const scale = Math.min(size / bitmap.width, size / bitmap.height)
+  const width = bitmap.width * scale
+  const height = bitmap.height * scale
   canvas.width = size
   canvas.height = size
-  canvas.getContext('2d')?.drawImage(bitmap, (bitmap.width - size) / 2, (bitmap.height - size) / 2, size, size, 0, 0, size, size)
+  canvas.getContext('2d')?.drawImage(bitmap, (size - width) / 2, (size - height) / 2, width, height)
   bitmap.close()
   const blob = await compressWebp(canvas)
   const path = `${userId}/${crypto.randomUUID()}.webp`
