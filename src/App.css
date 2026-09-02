@@ -42,6 +42,7 @@
 .mobile-actions-menu { position: absolute; z-index: 2; top: calc(100% + 8px); right: 0; display: flex; flex-direction: column; min-width: 128px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); box-shadow: 0 10px 26px #173e3326; }
 .mobile-actions-menu button { padding: 8px 6px; border: 0; color: var(--green); background: none; font: 11px 'DM Mono', monospace; text-align: left; cursor: pointer; }
 .mobile-actions-menu button:hover, .mobile-actions-menu button:focus-visible { color: var(--deep-green); background: #e7edd6; }
+.qr-dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }
 .form-backdrop { overscroll-behavior: contain; }
 html:has(.form-backdrop), body:has(.form-backdrop) { overflow: hidden; }
 .modal-form { text-align: left; }
@@ -57,4 +58,5 @@ html:has(.form-backdrop), body:has(.form-backdrop) { overflow: hidden; }
   .status-pill { display: block; grid-column: 2; grid-row: 2; align-self: start; }
   .desktop-actions { display: none; }
   .mobile-actions { display: block; grid-column: 3; grid-row: 1; }
+  .mobile-actions-menu { top: auto; bottom: calc(100% + 8px); }
 }
