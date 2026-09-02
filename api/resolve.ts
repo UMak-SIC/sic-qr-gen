@@ -1,4 +1,4 @@
-import { sendNotFound } from './not-found'
+import { sendNotFound } from './not-found.js'
 
 type Request = { method?: string; url?: string; query?: Record<string, string | string[] | undefined> }
 type Response = {
