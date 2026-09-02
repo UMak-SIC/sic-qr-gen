@@ -42,6 +42,21 @@ export function validateHttpsUrl(value: string) {
   }
 }
 
+export function formatExpiryInput(value: string | null) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (part: number) => String(part).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+export function expiryInputToIso(value: string) {
+  if (!value) return null
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) throw new Error('Enter a valid expiry date and time.')
+  return date.toISOString()
+}
+
 export async function listUrls() {
   const { data, error } = await getSupabaseClient()
     .from('urls')
@@ -74,10 +89,13 @@ export async function updateUrl(id: string, input: UrlInput) {
   return data as UrlRecord
 }
 
-export async function disableUrl(id: string) {
-  const { error } = await getSupabaseClient().from('urls').update({ status: 'disabled' }).eq('id', id)
+export async function setUrlStatus(id: string, status: 'active' | 'disabled') {
+  const { error } = await getSupabaseClient().from('urls').update({ status }).eq('id', id)
   if (error) throw error
 }
+
+export const disableUrl = (id: string) => setUrlStatus(id, 'disabled')
+export const enableUrl = (id: string) => setUrlStatus(id, 'active')
 
 export async function deleteUrl(id: string) {
   const { error } = await getSupabaseClient().rpc('delete_url', { p_id: id })

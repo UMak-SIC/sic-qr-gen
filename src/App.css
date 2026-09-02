@@ -32,5 +32,8 @@
   .qr-preview { justify-self: center; }
 }
 .modal-form input { display: block; min-width: 0; max-width: 100%; }
-.modal-form input[type='date'] { appearance: none; -webkit-appearance: none; text-align: start; }
+.modal-form input[type='date'], .modal-form input[type='datetime-local'] { appearance: none; -webkit-appearance: none; text-align: start; }
 .account-button::after { content: 'Log Out  ↗'; }
+.link-icon { display: flex; align-items: center; justify-content: center; line-height: 0; }
+.link-icon::before { content: none; }
+.status-pill.expired { color: #8a4a56; background: #f0d9dc; }

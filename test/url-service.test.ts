@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createUrl, deleteUrl, disableUrl, listUrls, resolveUrl, updateUrl, validateHttpsUrl } from '@/services/url-service'
+import { createUrl, deleteUrl, disableUrl, enableUrl, expiryInputToIso, formatExpiryInput, listUrls, resolveUrl, updateUrl, validateHttpsUrl } from '@/services/url-service'
+import { getUrlStatus } from '@/types/url'
 
 const supabase = { from: vi.fn(), rpc: vi.fn() }
 
@@ -17,15 +18,28 @@ describe('url service', () => {
     expect(validateHttpsUrl('not a URL')).toBe(false)
   })
 
+  it('derives disabled and expired display statuses', () => {
+    const now = new Date('2026-09-02T12:00:00.000Z')
+    expect(getUrlStatus({ status: 'active', expires_at: null }, now)).toBe('active')
+    expect(getUrlStatus({ status: 'active', expires_at: '2026-09-02T11:59:00.000Z' }, now)).toBe('expired')
+    expect(getUrlStatus({ status: 'disabled', expires_at: '2026-09-02T11:59:00.000Z' }, now)).toBe('disabled')
+  })
+
+  it('converts the local expiry input to an ISO timestamp and back', () => {
+    const input = '2026-10-01T14:30'
+    expect(formatExpiryInput(expiryInputToIso(input))).toBe(input)
+    expect(expiryInputToIso('')).toBeNull()
+  })
+
   it('creates a URL with database-owned fields omitted and the expected projection', async () => {
     const single = vi.fn().mockResolvedValue({ data: { id: '1' }, error: null })
     const select = vi.fn().mockReturnValue({ single })
     const insert = vi.fn().mockReturnValue({ select })
     supabase.from.mockReturnValue({ insert })
 
-    await createUrl({ name: '  Campaign  ', originalUrl: 'https://example.com', expiresAt: '2026-10-01', qrForeground: '#176b4f', qrBackground: '#f9f9ee', qrLogoFile: null, qrLogoUrl: null })
+    await createUrl({ name: '  Campaign  ', originalUrl: 'https://example.com', expiresAt: '2026-10-01T14:30:00.000Z', qrForeground: '#176b4f', qrBackground: '#f9f9ee', qrLogoFile: null, qrLogoUrl: null })
 
-    expect(insert).toHaveBeenCalledWith({ name: 'Campaign', original_url: 'https://example.com', expires_at: '2026-10-01', qr_foreground: '#176b4f', qr_background: '#f9f9ee', qr_logo_url: null })
+    expect(insert).toHaveBeenCalledWith({ name: 'Campaign', original_url: 'https://example.com', expires_at: '2026-10-01T14:30:00.000Z', qr_foreground: '#176b4f', qr_background: '#f9f9ee', qr_logo_url: null })
     expect(select).toHaveBeenCalledWith('id,url_id,name,original_url,view_count,status,expires_at,qr_foreground,qr_background,qr_logo_url')
   })
 
@@ -45,6 +59,9 @@ describe('url service', () => {
     await disableUrl('row-1')
     expect(update).toHaveBeenCalledWith({ status: 'disabled' })
     expect(eq).toHaveBeenCalledWith('id', 'row-1')
+
+    await enableUrl('row-1')
+    expect(update).toHaveBeenCalledWith({ status: 'active' })
   })
 
   it('lists URLs with the service projection', async () => {
