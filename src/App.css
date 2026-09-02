@@ -33,7 +33,28 @@
 }
 .modal-form input { display: block; min-width: 0; max-width: 100%; }
 .modal-form input[type='date'], .modal-form input[type='datetime-local'] { appearance: none; -webkit-appearance: none; text-align: start; }
-.account-button::after { content: 'Log Out  ↗'; }
+.account-button::after { content: 'Log Out'; }
 .link-icon { display: flex; align-items: center; justify-content: center; line-height: 0; }
 .link-icon::before { content: none; }
 .status-pill.expired { color: #8a4a56; background: #f0d9dc; }
+.mobile-actions { display: none; position: relative; justify-self: end; }
+.mobile-actions-trigger { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 50%; color: var(--green); background: transparent; cursor: pointer; }
+.mobile-actions-menu { position: absolute; z-index: 2; top: calc(100% + 8px); right: 0; display: flex; flex-direction: column; min-width: 128px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); box-shadow: 0 10px 26px #173e3326; }
+.mobile-actions-menu button { padding: 8px 6px; border: 0; color: var(--green); background: none; font: 11px 'DM Mono', monospace; text-align: left; cursor: pointer; }
+.mobile-actions-menu button:hover, .mobile-actions-menu button:focus-visible { color: var(--deep-green); background: #e7edd6; }
+.form-backdrop { overscroll-behavior: contain; }
+html:has(.form-backdrop), body:has(.form-backdrop) { overflow: hidden; }
+.modal-form { text-align: left; }
+.modal-form .section-heading::before { left: 0; }
+.modal-form .section-heading::after { padding-left: 0; }
+.modal-form input { text-align: left; }
+.link-row { grid-template-columns: 45px minmax(0, 1fr) 80px 170px; }
+.link-icon.active { background: var(--green); }
+.link-icon.disabled { color: #f1f2ec; background: #9aa19a; }
+.link-icon.expired { color: var(--deep-green); background: #b39a70; }
+@media (max-width: 800px) {
+  .link-row { grid-template-columns: 38px minmax(0, 1fr) 40px; min-height: 112px; }
+  .status-pill { display: block; grid-column: 2; grid-row: 2; align-self: start; }
+  .desktop-actions { display: none; }
+  .mobile-actions { display: block; grid-column: 3; grid-row: 1; }
+}
