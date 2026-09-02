@@ -12,4 +12,15 @@ describe('QR service', () => {
     await expect(createQrDataUrl(payload)).resolves.toBe('data:image/png;base64,qr')
     expect(toDataURL).toHaveBeenCalledWith(payload, { margin: 1, width: 560, errorCorrectionLevel: 'M' })
   })
+
+  it('keeps the base QR when the optional logo cannot load', async () => {
+    vi.stubGlobal('document', { createElement: () => ({ getContext: () => ({}) }) })
+    vi.stubGlobal('Image', class {
+      onload: (() => void) | null = null
+      onerror: ((event?: Event) => void) | null = null
+      set src(value: string) { value === 'broken-logo' ? this.onerror?.() : this.onload?.() }
+    })
+
+    await expect(createQrDataUrl('https://sic-qr-gen.vercel.app/AbcDefG', { logoUrl: 'broken-logo' })).resolves.toBe('data:image/png;base64,qr')
+  })
 })

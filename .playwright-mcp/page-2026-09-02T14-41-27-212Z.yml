@@ -1,0 +1,19 @@
+- generic [ref=e2]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: SIC
+        - generic [ref=e7]: QR Studio
+      - paragraph [ref=e8]: SIC QR GENERATOR
+      - heading [level=1] [ref=e9]:
+        - text: Put your link
+        - generic [ref=e10]:
+          - text: in the
+          - emphasis [ref=e11]: right
+          - text: place.
+      - paragraph [ref=e12]: Create stable QR links for events, forms, and everything your community shares.
+      - button "Continue with Google ↗" [ref=e13] [cursor=pointer]:
+        - text: Continue with Google
+        - generic [ref=e14]: ↗
+      - paragraph [ref=e15]: Google sign-in only. No password required.
+  - region "Notifications alt+T"

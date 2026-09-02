@@ -15,27 +15,31 @@ export async function createQrDataUrl(value: string, style: QrStyle = {}) {
   })
   if (!style.logoUrl) return dataUrl
 
-  const canvas = document.createElement('canvas')
-  canvas.width = 560
-  canvas.height = 560
-  const context = canvas.getContext('2d')
-  if (!context) return dataUrl
-  const qrImage = await loadImage(dataUrl)
-  const logo = await loadImage(style.logoUrl)
-  context.drawImage(qrImage, 0, 0, 560, 560)
-  const size = 112
-  const x = (560 - size) / 2
-  context.fillStyle = style.background ?? '#f9f9ee'
-  context.beginPath()
-  context.roundRect(x - 10, x - 10, size + 20, size + 20, 18)
-  context.fill()
-  context.save()
-  context.beginPath()
-  context.arc(280, 280, size / 2, 0, Math.PI * 2)
-  context.clip()
-  context.drawImage(logo, x, x, size, size)
-  context.restore()
-  return canvas.toDataURL('image/png')
+  try {
+    const canvas = document.createElement('canvas')
+    canvas.width = 560
+    canvas.height = 560
+    const context = canvas.getContext('2d')
+    if (!context) return dataUrl
+    const qrImage = await loadImage(dataUrl)
+    const logo = await loadImage(style.logoUrl)
+    context.drawImage(qrImage, 0, 0, 560, 560)
+    const size = 112
+    const x = (560 - size) / 2
+    context.fillStyle = style.background ?? '#f9f9ee'
+    context.beginPath()
+    context.roundRect(x - 10, x - 10, size + 20, size + 20, 18)
+    context.fill()
+    context.save()
+    context.beginPath()
+    context.arc(280, 280, size / 2, 0, Math.PI * 2)
+    context.clip()
+    context.drawImage(logo, x, x, size, size)
+    context.restore()
+    return canvas.toDataURL('image/png')
+  } catch {
+    return dataUrl
+  }
 }
 
 function loadImage(source: string) {
