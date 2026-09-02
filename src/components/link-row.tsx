@@ -23,6 +23,15 @@ export function LinkRow({ url, onEdit, onToggleStatus, onDelete }: LinkRowProps)
     return () => { active = false }
   }, [shortUrl, url.qr_foreground, url.qr_background, url.qr_logo_url])
 
+  useEffect(() => {
+    if (!showMobileActions) return
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (event.target instanceof Element && !event.target.closest(`[aria-controls="mobile-actions-${url.id}"], #mobile-actions-${url.id}`)) setShowMobileActions(false)
+    }
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    return () => document.removeEventListener('pointerdown', closeOnOutsidePointer)
+  }, [showMobileActions, url.id])
+
   const download = () => { void downloadQrDataUrl(qr, `${url.url_id}.png`).catch(() => toast.error('Could not download this QR code.')) }
 
   return <><article className="link-row"><div className={`link-icon ${status}`} role="img" aria-label={`${status} link`} title={`${status} link`}><Link2 size={16} strokeWidth={2.25} /></div><div className="link-detail"><h3>{url.name}</h3><p>{shortUrl}</p><small>{url.original_url}</small></div><div className="link-views"><strong>{url.view_count}</strong><span>scans</span></div><div className="row-actions desktop-actions"><button type="button" onClick={onEdit}>Edit</button><button type="button" onClick={onToggleStatus}>{url.status === 'disabled' ? 'Enable' : 'Disable'}</button><button type="button" onClick={onDelete}>Delete</button>{qr && <button type="button" onClick={() => setShowQr(true)}>View QR</button>}</div><div className="mobile-actions"><button className="mobile-actions-trigger" type="button" aria-label={`Show actions for ${url.name}`} aria-expanded={showMobileActions} aria-controls={`mobile-actions-${url.id}`} onClick={() => setShowMobileActions((visible) => !visible)}><Ellipsis size={22} strokeWidth={2} /></button>{showMobileActions && <div className="mobile-actions-menu" id={`mobile-actions-${url.id}`} role="menu"><button type="button" role="menuitem" onClick={onEdit}>Edit</button><button type="button" role="menuitem" onClick={onToggleStatus}>{url.status === 'disabled' ? 'Enable' : 'Disable'}</button><button type="button" role="menuitem" onClick={onDelete}>Delete</button>{qr && <button type="button" role="menuitem" onClick={() => setShowQr(true)}>View QR</button>}</div>}</div></article>{showQr && qr && <div className="form-backdrop" role="presentation" onMouseDown={() => setShowQr(false)}><section className="qr-dialog" role="dialog" aria-modal="true" aria-labelledby={`qr-title-${url.id}`} onMouseDown={(event) => event.stopPropagation()}><button className="close-button" type="button" onClick={() => setShowQr(false)} aria-label="Close QR preview">×</button><p className="eyebrow">QR CODE</p><h2 id={`qr-title-${url.id}`}>{url.name}</h2><img src={qr} alt={`QR code for ${url.name}`} /><button className="primary-button" type="button" onClick={download}>Download PNG</button></section></div>}</>
