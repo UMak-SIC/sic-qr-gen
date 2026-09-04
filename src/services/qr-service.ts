@@ -54,7 +54,7 @@ export async function downloadQrDataUrl(dataUrl: string, filename: string) {
   const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0))
   const file = new File([bytes], filename, { type: mimeType })
 
-  if (navigator.canShare?.({ files: [file] })) {
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: filename })
     } catch (error) {

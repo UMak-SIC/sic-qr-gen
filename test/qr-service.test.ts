@@ -33,12 +33,25 @@ describe('QR service', () => {
 
   it('shares the QR file on mobile browsers that support file sharing', async () => {
     const share = vi.fn().mockResolvedValue(undefined)
-    vi.stubGlobal('navigator', { canShare: () => true, share })
+    vi.stubGlobal('navigator', { userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)', canShare: () => true, share })
 
     await downloadQrDataUrl('data:image/png;base64,aGVsbG8=', 'link.png')
 
     expect(share).toHaveBeenCalledOnce()
     expect(share.mock.calls[0][0].files[0]).toBeInstanceOf(File)
     expect(share.mock.calls[0][0].files[0].name).toBe('link.png')
+  })
+
+  it('downloads instead of opening the share sheet on Windows', async () => {
+    const share = vi.fn().mockResolvedValue(undefined)
+    const click = vi.fn()
+    vi.stubGlobal('navigator', { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', canShare: () => true, share })
+    vi.stubGlobal('document', { createElement: () => ({ click }) })
+    vi.stubGlobal('URL', { createObjectURL: () => 'blob:qr', revokeObjectURL: vi.fn() })
+
+    await downloadQrDataUrl('data:image/png;base64,aGVsbG8=', 'link.png')
+
+    expect(share).not.toHaveBeenCalled()
+    expect(click).toHaveBeenCalledOnce()
   })
 })
