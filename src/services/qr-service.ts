@@ -52,19 +52,7 @@ export async function downloadQrDataUrl(dataUrl: string, filename: string) {
   const [header, encoded] = dataUrl.split(',', 2)
   const mimeType = header.match(/^data:(.*?);base64$/)?.[1] ?? 'image/png'
   const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0))
-  const file = new File([bytes], filename, { type: mimeType })
-
-  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && navigator.canShare?.({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], title: filename })
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return
-      throw error
-    }
-    return
-  }
-
-  const objectUrl = URL.createObjectURL(file)
+  const objectUrl = URL.createObjectURL(new Blob([bytes], { type: mimeType }))
   const link = document.createElement('a')
   link.href = objectUrl
   link.download = filename
