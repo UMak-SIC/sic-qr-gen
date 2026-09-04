@@ -15,9 +15,12 @@ describe('QR service', () => {
 
   it('keeps the base QR when the optional logo cannot load', async () => {
     vi.stubGlobal('document', { createElement: () => ({ getContext: () => ({}) }) })
+    const images: { crossOrigin: string }[] = []
     vi.stubGlobal('Image', class {
+      crossOrigin = ''
       onload: (() => void) | null = null
       onerror: ((event?: Event) => void) | null = null
+      constructor() { images.push(this) }
       set src(value: string) { value === 'broken-logo' ? this.onerror?.() : this.onload?.() }
     })
 
@@ -25,6 +28,7 @@ describe('QR service', () => {
 
     await expect(createQrDataUrl('https://sic-qr-gen.vercel.app/AbcDefG', { logoUrl: 'broken-logo' }, onLogoError)).resolves.toBe('data:image/png;base64,qr')
     expect(onLogoError).toHaveBeenCalledOnce()
+    expect(images[0].crossOrigin).toBe('')
   })
 
   it('shares the QR file on mobile browsers that support file sharing', async () => {

@@ -77,7 +77,7 @@ function loadImage(source: string) {
     const image = new Image()
     image.onload = () => resolve(image)
     image.onerror = reject
-    image.crossOrigin = 'anonymous'
+    if (/^https?:\/\//i.test(source)) image.crossOrigin = 'anonymous'
     image.src = source
   })
 }
